@@ -51,7 +51,7 @@ func TestServeMuc(t *testing.T) {
 	}
 }
 
-func TestRquest(t *testing.T) {
+func TestRequest(t *testing.T) {
 	var handler http.HandlerFunc = func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, r.Method)
 		fmt.Fprintln(w, r.RequestURI)
