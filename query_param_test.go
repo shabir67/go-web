@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -53,5 +54,23 @@ func TestMultipleQueryParameter(t *testing.T) {
 	bodyString := string(body)
 
 	require.Equal(t, "Hello Muhammad Shobir", bodyString, "Result must be 'Hello Gais'")
+}
 
+func MultipleParameterValues(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	names := query["name"]
+
+	fmt.Fprint(w, strings.Join(names, " "))
+}
+
+func TestMultipleParameterValues(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "http://localhost:8080/hello?name=Aldi&name=Taher&name=x&name=Coldplay", nil)
+	recorder := httptest.NewRecorder()
+
+	MultipleParameterValues(recorder, request)
+
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+
+	fmt.Println(string(body))
 }
