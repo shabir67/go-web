@@ -2,7 +2,9 @@ package goweb
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -41,4 +43,34 @@ func TestCookie(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func TestSetCookie(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "http://localhost:8080/?name=Shobir", nil)
+	recorder := httptest.NewRecorder()
+
+	SetCookie(recorder, request)
+
+	cookies := recorder.Result().Cookies()
+
+	for _, cookie := range cookies {
+		fmt.Printf("Cookie %s:%s", cookie.Name, cookie.Value)
+
+	}
+}
+
+func TestGetCookie(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "htpp://localhost:8080/", nil)
+	cookie := new(http.Cookie)
+	cookie.Name = "X-SYNC-Name"
+	cookie.Value = "Shobir"
+	request.AddCookie(cookie)
+
+	recorder := httptest.NewRecorder()
+
+	GetCookie(recorder, request)
+
+	body, _ := io.ReadAll(recorder.Result().Body)
+	fmt.Println(string(body))
+
 }
